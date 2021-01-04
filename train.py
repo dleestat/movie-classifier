@@ -56,7 +56,7 @@ model = make_pipeline(
 model.fit(X_train, Y_train)
 metrics = {'Train': evaluate(model, X_train, Y_train), 'Val': evaluate(model, X_val, Y_val)}
 model.fit(X, Y)
-metrics['Final Train'] = evaluate(model, X, Y)
+metrics['Final train'] = evaluate(model, X, Y)
 
 # Export model
 joblib.dump(model, 'model/model.joblib')
