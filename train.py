@@ -45,22 +45,22 @@ summaries = pd.read_csv(
 df = summaries.merge(genres, on='id').reset_index(drop=True)
 mlb = MultiLabelBinarizer()
 labels = pd.DataFrame(mlb.fit_transform(df.genres), columns=mlb.classes_)
-X, Y = df[['summary']], labels[labels.sum().nlargest(10).sort_index().index]
+X, Y = df[['summary']], labels[labels.sum().nlargest(20).sort_index().index]
 X_train, X_val, Y_train, Y_val = train_test_split(X, Y, test_size=10000, random_state=0)
 
 # Train model
 model = make_pipeline(
-    make_column_transformer((TfidfVectorizer(min_df=2), 'summary')),
-    MultiOutputClassifier(LogisticRegression(solver='liblinear', random_state=0), n_jobs=-1)
-).fit(X_train, Y_train)
+    make_column_transformer((TfidfVectorizer(min_df=10), 0)),
+    MultiOutputClassifier(LogisticRegression(solver='liblinear', random_state=0), n_jobs=-1))
 
+model.fit(X_train, Y_train)
 metrics = {'Train': evaluate(model, X_train, Y_train), 'Val': evaluate(model, X_val, Y_val)}
 model.fit(X, Y)
-metrics['All'] = evaluate(model, X, Y)
+metrics['Final Train'] = evaluate(model, X, Y)
 
 # Export model
 joblib.dump(model, 'model/model.joblib')
 with open('model/metrics.json', 'w') as f:
     json.dump(metrics, f)
 with open('model/metadata.json', 'w') as f:
-    json.dump({'classes': Y.columns.tolist()}, f)
+    json.dump({'classes': list(Y)}, f)
