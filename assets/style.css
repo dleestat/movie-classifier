@@ -2,6 +2,10 @@
     font-family: sans-serif;
 }
 
+figure {
+    margin: 0;
+}
+
 .dash-graph * {
     cursor: default !important;
 }
