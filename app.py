@@ -34,6 +34,7 @@ def predict(input):
         fig = px.bar(pred, x='Confidence', y='Genre', range_x=[0, 1])
         fig.update_layout(
             font_family='sans-serif',
+            margin=dict(t=0, r=0, b=0, l=0),
             xaxis=dict(fixedrange=True, tickvals=np.linspace(0, 1, 11)),
             yaxis=dict(fixedrange=True, ticksuffix=' '))
         fig.update_traces(hovertemplate='%{x:.2f}')
