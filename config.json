@@ -1,0 +1,15 @@
+{
+  "normalized_genres": {
+    "Action": ["Action"],
+    "Action/Adventure":  ["Action", "Adventure"],
+    "Adventure": ["Adventure"],
+    "Comedy": ["Comedy"],
+    "Comedy film": ["Comedy"],
+    "Crime Fiction": ["Crime"],
+    "Drama": ["Drama"],
+    "Horror": ["Horror"],
+    "Romance Film": ["Romance"],
+    "Romantic Drama": ["Drama", "Romance"],
+    "Thriller": ["Thriller"]
+  }
+}
