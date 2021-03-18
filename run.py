@@ -1,8 +1,12 @@
+import os
 from src import data
 import sys
 
 
 def main(targets):
+    if "download" in targets:
+        os.system("src/download.sh")
+
     if "data" in targets:
         data.main()
 
