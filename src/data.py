@@ -1,7 +1,9 @@
 import json
+import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pandas as pd
+import seaborn as sns
 from sklearn.preprocessing import MultiLabelBinarizer
 
 
@@ -69,9 +71,24 @@ def main():
     df.to_pickle("data/out/df.pkl")
 
     statistics["records"]["data/out/df.pkl"] = len(df)
-    statistics["normalized_genres"] = df.drop("summary", axis=1).sum().sort_values(ascending=False).to_dict()
+    statistics["normalized_genres"] = labels.sum().sort_values(ascending=False).to_dict()
     with open('data/profiling/statistics.json', 'w') as f:
         json.dump(statistics, f, indent=2)
+
+    fig, ax = plt.subplots(figsize=(6, 6))
+    sns.heatmap(
+        labels.corr(),
+        annot=True,
+        cbar=False,
+        cmap="bwr",
+        fmt=".1f",
+        square=True,
+        vmin=-1,
+        vmax=1,
+        ax=ax,
+    )
+    ax.tick_params(left=False, bottom=False)
+    fig.savefig("data/profiling/label_correlation.png", dpi=300, bbox_inches="tight")
 
 
 if __name__ == "__main__":
