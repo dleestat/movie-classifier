@@ -63,12 +63,15 @@ def main():
         genres=df.genres.apply(normalize_genres)
     ).dropna().reset_index(drop=True)
 
-    statistics["records"]["data/out/df.pkl"] = len(df)
-    statistics["normalized_genres"] = df.genres.explode().value_counts().to_dict()
+    mlb = MultiLabelBinarizer()
+    summaries, labels = df[["summary"]], pd.DataFrame(mlb.fit_transform(df.genres), columns=mlb.classes_)
+    df = pd.concat([summaries, labels], axis=1)
+    df.to_pickle("data/out/df.pkl")
 
+    statistics["records"]["data/out/df.pkl"] = len(df)
+    statistics["normalized_genres"] = df.drop("summary", axis=1).sum().sort_values(ascending=False).to_dict()
     with open('data/profiling/statistics.json', 'w') as f:
         json.dump(statistics, f, indent=2)
-    df.to_pickle("data/out/df.pkl")
 
 
 if __name__ == "__main__":
