@@ -1,5 +1,5 @@
 {
-  "normalized_genres": {
+  "genre_normalization": {
     "Acid western": ["Western"],
     "Action": ["Action"],
     "Action/Adventure":  ["Action", "Adventure"],

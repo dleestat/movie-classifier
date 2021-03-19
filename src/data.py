@@ -43,7 +43,7 @@ def main():
         "genres": metadata.genres.explode().value_counts().to_dict()
     }
 
-    normalized_genres = json.load(open("config/config.json"))["normalized_genres"]
+    genre_normalization = json.load(open("config/config.json"))["genre_normalization"]
 
     def clean_summary(summary):
         return (
@@ -56,11 +56,11 @@ def main():
         )
 
     def normalize_genres(genres):
-        normalized = []
+        normalized_genres = []
         for genre in genres:
-            if genre in normalized_genres:
-                normalized.extend(normalized_genres[genre])
-        return list(np.unique(normalized)) if normalized else pd.NA
+            if genre in genre_normalization:
+                normalized_genres.extend(genre_normalization[genre])
+        return list(np.unique(normalized_genres)) if normalized_genres else pd.NA
 
     df = df.assign(
         summary=clean_summary(df.summary),
