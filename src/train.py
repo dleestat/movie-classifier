@@ -27,7 +27,7 @@ def evaluate(model, X, Y_true):
 
 # Load data
 genres = pd.read_csv(
-    'data/movie.metadata.tsv',
+    '../data/raw/movie.metadata.tsv',
     converters={'genres': lambda x: list(eval(x).values())},
     delimiter='\t',
     header=None,
@@ -36,7 +36,7 @@ genres = pd.read_csv(
     usecols=[0, 8])
 
 summaries = pd.read_csv(
-    'data/plot_summaries.txt',
+    '../data/raw/plot_summaries.txt',
     delimiter='\t',
     header=None,
     index_col='id',
@@ -59,8 +59,8 @@ model.fit(X, Y)
 metrics['Final train'] = evaluate(model, X, Y)
 
 # Export model
-joblib.dump(model, 'model/model.joblib')
-with open('model/metrics.json', 'w') as f:
+joblib.dump(model, '../model/model.joblib')
+with open('../model/metrics.json', 'w') as f:
     json.dump(metrics, f)
-with open('model/metadata.json', 'w') as f:
+with open('../model/metadata.json', 'w') as f:
     json.dump({'classes': list(Y)}, f)
