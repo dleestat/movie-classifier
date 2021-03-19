@@ -1,5 +1,5 @@
 import os
-from src import data
+from src import data, train
 import sys
 
 
@@ -11,7 +11,7 @@ def main(targets):
         data.main()
 
     if "train" in targets:
-        ...
+        train.main()
 
 
 if __name__ == "__main__":
