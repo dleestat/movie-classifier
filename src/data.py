@@ -37,6 +37,8 @@ def main():
             "data/raw/plot_summaries.txt": len(summaries),
             "merged": len(df)
         },
+        "label cardinality": ...,
+        "label density": ...,
         "normalized_genres": ...,
         "genres": metadata.genres.explode().value_counts().to_dict()
     }
@@ -71,6 +73,8 @@ def main():
     df.to_pickle("data/out/df.pkl")
 
     statistics["records"]["data/out/df.pkl"] = len(df)
+    statistics["label cardinality"] = labels.sum(1).mean()
+    statistics["label density"] = labels.mean(1).mean()
     statistics["normalized_genres"] = labels.sum().sort_values(ascending=False).to_dict()
     with open('data/profiling/statistics.json', 'w') as f:
         json.dump(statistics, f, indent=2)
