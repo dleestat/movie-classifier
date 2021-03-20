@@ -11,7 +11,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.svm import LinearSVC
-import time
+from time import time
 
 
 def main():
@@ -31,24 +31,34 @@ def main():
     else:
         raise ValueError(f"{algorithm} is not a valid algorithm")
 
-    model = make_pipeline(make_column_transformer((TfidfVectorizer(), 0)), MultiOutputClassifier(classifier, n_jobs=-1))
+    model = make_pipeline(make_column_transformer((TfidfVectorizer(), 0)), MultiOutputClassifier(classifier))
 
-    def evaluate(model, X, Y_true):
+    def evaluate(model, X, Y, train=True):
+        metrics = {"# samples": len(X)}
+
+        if train:
+            start = time()
+            model.fit(X, Y)
+            end = time()
+            metrics["train time"] = end - start
+
+        start = time()
         Y_pred = model.predict(X)
-        return {
-            "# samples": len(X),
-            "subset accuracy": accuracy_score(Y_true, Y_pred),
-            "accuracy": jaccard_score(Y_true, Y_pred, average="samples", zero_division=1),
-            "Hamming similarity": 1 - hamming_loss(Y_true, Y_pred),
-            "precision": precision_score(Y_true, Y_pred, average="samples", zero_division=1),
-            "recall": recall_score(Y_true, Y_pred, average="samples", zero_division=1),
-            "f1": f1_score(Y_true, Y_pred, average="samples", zero_division=1)
-        }
+        end = time()
+        metrics["inference time"] = end - start
+        metrics["subset accuracy"] = accuracy_score(Y, Y_pred)
+        metrics["accuracy"] = jaccard_score(Y, Y_pred, average="samples", zero_division=1)
+        metrics["Hamming similarity"] = 1 - hamming_loss(Y, Y_pred)
+        metrics["precision"] = precision_score(Y, Y_pred, average="samples", zero_division=1)
+        metrics["recall"] = recall_score(Y, Y_pred, average="samples", zero_division=1)
+        metrics["f1"] = f1_score(Y, Y_pred, average="samples", zero_division=1)
+        return metrics
 
-    model.fit(X_train, Y_train)
-    metrics = {"train": evaluate(model, X_train, Y_train), "val": evaluate(model, X_val, Y_val)}
-    model.fit(X, Y)
-    metrics["final train"] = evaluate(model, X, Y)
+    metrics = {
+        "train": evaluate(model, X_train, Y_train),
+        "val": evaluate(model, X_val, Y_val, train=False),
+        "full_train": evaluate(model, X, Y)
+    }
 
     joblib.dump(model, "model/model.joblib")
     with open(f"model/{algorithm} {datetime.datetime.today()}.json", "w") as f:
