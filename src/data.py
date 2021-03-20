@@ -8,6 +8,8 @@ from sklearn.preprocessing import MultiLabelBinarizer
 
 
 def main():
+    config = json.load(open("config/config.json"))
+
     os.makedirs("data/out", exist_ok=True)
     os.makedirs("data/profiling", exist_ok=True)
 
@@ -43,7 +45,7 @@ def main():
         "genres": metadata.genres.explode().value_counts().to_dict()
     }
 
-    genre_normalization = json.load(open("config/config.json"))["genre_normalization"]
+    genre_normalization = config["genre_normalization"]
 
     def clean_summary(summary):
         return (
