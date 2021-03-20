@@ -56,7 +56,7 @@ def main():
 
     metrics = {
         "train": evaluate(model, X_train, Y_train),
-        "val": evaluate(model, X_val, Y_val, train=False),
+        "validation": evaluate(model, X_val, Y_val, train=False),
         "full_train": evaluate(model, X, Y)
     }
 
