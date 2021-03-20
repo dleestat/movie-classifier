@@ -1,4 +1,5 @@
 {
+  "algorithm": "baseline",
   "genre_normalization": {
     "Acid western": ["Western"],
     "Action": ["Action"],
