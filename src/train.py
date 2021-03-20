@@ -46,12 +46,12 @@ def main():
         Y_pred = model.predict(X)
         end = time()
         metrics["inference time"] = end - start
-        metrics["subset accuracy"] = accuracy_score(Y, Y_pred)
-        metrics["accuracy"] = jaccard_score(Y, Y_pred, average="samples", zero_division=1)
+        metrics["exact match"] = accuracy_score(Y, Y_pred)
         metrics["Hamming similarity"] = 1 - hamming_loss(Y, Y_pred)
-        metrics["precision"] = precision_score(Y, Y_pred, average="samples", zero_division=1)
-        metrics["recall"] = recall_score(Y, Y_pred, average="samples", zero_division=1)
-        metrics["f1"] = f1_score(Y, Y_pred, average="samples", zero_division=1)
+        metrics["Jaccard similarity"] = jaccard_score(Y, Y_pred, average="samples", zero_division=0)
+        metrics["precision"] = precision_score(Y, Y_pred, average="samples", zero_division=0)
+        metrics["recall"] = recall_score(Y, Y_pred, average="samples", zero_division=0)
+        metrics["f1"] = f1_score(Y, Y_pred, average="samples", zero_division=0)
         return metrics
 
     metrics = {
