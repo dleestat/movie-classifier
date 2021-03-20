@@ -11,7 +11,6 @@ from sklearn.metrics import accuracy_score, f1_score, hamming_loss, jaccard_scor
 from sklearn.model_selection import train_test_split
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.pipeline import make_pipeline
-from sklearn.svm import LinearSVC
 from time import time
 
 
