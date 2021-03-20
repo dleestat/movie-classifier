@@ -9,7 +9,6 @@ from sklearn.preprocessing import MultiLabelBinarizer
 
 def main():
     config = json.load(open("config/config.json"))
-
     os.makedirs("data/out", exist_ok=True)
     os.makedirs("data/profiling", exist_ok=True)
 
