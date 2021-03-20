@@ -18,7 +18,7 @@ from time import time
 def main():
     config = json.load(open("config/config.json"))
     os.makedirs("model", exist_ok=True)
-    os.makedirs("model/metrics", exist_ok=True)
+    os.makedirs("model/profiling", exist_ok=True)
 
     df = pd.read_pickle("data/out/df.pkl")
     X, Y = df[["summary"]], df.drop("summary", axis=1)
@@ -70,13 +70,18 @@ def main():
         "validation": evaluate(model, X_val, Y_val, train=False),
         "full_train": evaluate(model, X, Y)
     }
-    with open(f"model/metrics/{algorithm} {datetime.datetime.today()}.json", "w") as f:
+    with open(f"model/profiling/{algorithm} {datetime.datetime.today()}.json", "w") as f:
         json.dump(metrics, f, indent=2)
 
     joblib.dump(model, "model/model.joblib")
+
     features = model['columntransformer'].named_transformers_['tfidfvectorizer'].get_feature_names()
-    with open("model/features.txt", "w") as f:
+    with open("model/profiling/features.txt", "w") as f:
         f.write("\n".join(features))
+
+    metadata = {"classes": list(Y)}
+    with open(f"model/metadata.json", "w") as f:
+        json.dump(metadata, f, indent=2)
 
 
 if __name__ == "__main__":
