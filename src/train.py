@@ -1,6 +1,7 @@
 import datetime
 import joblib
 import json
+import os
 import pandas as pd
 from sklearn.compose import make_column_transformer
 from sklearn.dummy import DummyClassifier
@@ -16,6 +17,8 @@ from time import time
 
 def main():
     config = json.load(open("config/config.json"))
+    os.makedirs("model", exist_ok=True)
+    os.makedirs("model/metrics", exist_ok=True)
 
     df = pd.read_pickle("data/out/df.pkl")
     X, Y = df[["summary"]], df.drop("summary", axis=1)
@@ -61,7 +64,7 @@ def main():
     }
 
     joblib.dump(model, "model/model.joblib")
-    with open(f"model/{algorithm} {datetime.datetime.today()}.json", "w") as f:
+    with open(f"model/metrics/{algorithm} {datetime.datetime.today()}.json", "w") as f:
         json.dump(metrics, f, indent=2)
 
 
