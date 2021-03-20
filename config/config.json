@@ -1,5 +1,7 @@
 {
   "algorithm": "svm",
+  "tfidf_min_df": 10,
+  "tfidf_sublinear_tf": true,
   "genre_normalization": {
     "Acid western": ["Western"],
     "Action": ["Action"],
