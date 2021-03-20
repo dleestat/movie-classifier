@@ -29,8 +29,6 @@ def main():
         classifier = DummyClassifier()
     elif algorithm == "logistic":
         classifier = LogisticRegression(solver="liblinear", random_state=0)
-    elif algorithm == "svm":
-        classifier = LinearSVC(random_state=0)
     else:
         raise ValueError(f"{algorithm} is not a valid algorithm")
 

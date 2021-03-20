@@ -1,5 +1,5 @@
 {
-  "algorithm": "svm",
+  "algorithm": "logistic",
   "tfidf_min_df": 10,
   "tfidf_sublinear_tf": true,
   "genre_normalization": {
