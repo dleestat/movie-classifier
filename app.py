@@ -10,6 +10,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+from src.utils import truncate_string
 
 model, metadata = joblib.load("model/model.joblib"), json.load(open("model/metadata.json"))
 classes = metadata["classes"]
@@ -64,18 +65,21 @@ def create_interpretation_graph(input_text):
 
     rows = 2
     cols = math.ceil(len(classes) / rows)
-    fig = make_subplots(rows=rows, cols=cols, subplot_titles=classes)
-    largest_abs_contribution = 0
+    fig = make_subplots(rows=rows, cols=cols, subplot_titles=classes, vertical_spacing=.4)
+    largest_abs_contribution = longest_string = 0
     for i in range(len(classes)):
         row, col = i // cols + 1, i % cols + 1
         contributions = coefficients.loc[classes[i]] * tfidf_vector
         contributions = contributions[contributions.abs().nlargest(10).index]
         largest_abs_contribution = max(largest_abs_contribution, contributions.abs().max())
+        longest_string = max(longest_string, contributions.index.str.len().max())
         fig.add_trace(
             go.Bar(
-                x=contributions.index,
+                x=[truncate_string(index, 15) for index in contributions.index],
                 y=contributions,
-                hovertemplate="%{y:.3f}<extra></extra>",
+                customdata=contributions.index,
+                hovertemplate="%{customdata}: %{y:.3f}<extra></extra>",
+                marker_color=["limegreen" if contribution >= 0 else "red" for contribution in contributions],
             ),
             row=row,
             col=col
@@ -91,7 +95,8 @@ def create_interpretation_graph(input_text):
         fixedrange=True,
         range=[-largest_abs_contribution * 1.05, largest_abs_contribution * 1.05],
         showticklabels=False,
-        tickvals=[0]
+        tickvals=[0],
+        automargin=True
     )
 
     for row in range(rows):
