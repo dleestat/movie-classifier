@@ -45,12 +45,12 @@ def predict(input_text):
 
 
 def create_prediction_graph(input_text):
-    pred = pd.DataFrame({
+    predictions = pd.DataFrame({
         "Confidence": np.array(model.predict_proba([[input_text]])).squeeze()[:, 1],
         "Genre": classes
     }).sort_values("Confidence")
 
-    fig = px.bar(pred, x="Confidence", y="Genre", range_x=[0, 1])
+    fig = px.bar(predictions, x="Confidence", y="Genre", range_x=[0, 1])
     fig.update_layout(
         margin=dict(l=120, r=0, t=0, b=0),
         xaxis=dict(fixedrange=True, tickvals=np.linspace(0, 1, 11)),
