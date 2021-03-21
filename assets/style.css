@@ -10,15 +10,6 @@ figure {
     cursor: default !important;
 }
 
-.flex-container {
-    display: flex;
-}
-
-.flex-item {
-    flex: 1;
-}
-
-#input {
-    height: 300px;
+#input-text {
     resize: none;
 }
