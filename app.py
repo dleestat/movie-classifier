@@ -24,9 +24,10 @@ app.title = "Movie Genre Predictor"
 app.layout = html.Div([
     html.H1("Movie Genre Predictor"),
     html.Div([
-        dcc.Textarea(id="input-text", placeholder="Enter a movie summary", style=dict(flex=1)),
-        html.Figure(id="prediction", style=dict(flex=1))
-    ], style=dict(display="flex"))
+        dcc.Textarea(id="input-text", placeholder="Enter a movie summary here", style=dict(flex=.48, height="254px")),
+        html.Figure(id="prediction", style=dict(flex=.52))
+    ], style=dict(display="flex")),
+    html.Figure(id="interpretation")
 ])
 
 
@@ -36,7 +37,6 @@ def predict(input_text):
         input_text = ""
 
     tfidf_vector = tfidfvectorizer.transform([input_text]).toarray().squeeze()
-    tfidf_vector = tfidf_vector[tfidf_vector != 0]
 
     pred = pd.DataFrame({
         "Confidence": np.array(model.predict_proba([[input_text]])).squeeze()[:, 1],
@@ -45,14 +45,12 @@ def predict(input_text):
 
     fig = px.bar(pred, x="Confidence", y="Genre", range_x=[0, 1])
     fig.update_layout(
-        font_family="sans-serif",
-        margin=dict(t=0, r=0, b=0, l=0),
+        margin=dict(l=120, r=0, t=0, b=0),
         xaxis=dict(fixedrange=True, tickvals=np.linspace(0, 1, 11)),
-        yaxis=dict(title=None, fixedrange=True, ticksuffix=" "),
-        height=300
+        yaxis=dict(fixedrange=True, ticksuffix=" ", title=None)
     )
     fig.update_traces(hovertemplate="%{x:.3f}")
-    return dcc.Graph(figure=fig, config=dict(displayModeBar=False))
+    return dcc.Graph(figure=fig, config=dict(displayModeBar=False), responsive=True, style=dict(height="300px"))
 
 
 if __name__ == "__main__":
