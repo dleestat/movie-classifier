@@ -2,6 +2,11 @@
     font-family: sans-serif;
 }
 
+body {
+    margin: auto;
+    width: 95%;
+}
+
 figure {
     margin: 0;
 }
