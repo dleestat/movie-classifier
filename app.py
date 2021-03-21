@@ -23,10 +23,12 @@ server = app.server
 app.title = "Movie Genre Predictor"
 app.layout = html.Div([
     html.H1("Movie Genre Predictor"),
+    html.H2("Prediction"),
     html.Div([
         dcc.Textarea(id="input-text", placeholder="Enter a movie summary here", style=dict(flex=.48, height="254px")),
         html.Figure(id="prediction", style=dict(flex=.52))
     ], style=dict(display="flex")),
+    html.H2("Interpretation"),
     html.Figure(id="interpretation")
 ])
 
