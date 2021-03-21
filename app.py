@@ -28,7 +28,7 @@ app.layout = html.Div([
     html.H1("Movie Genre Predictor"),
     html.H2("Prediction"),
     html.Div([
-        dcc.Textarea(id="input-text", placeholder="Enter a movie summary here", style=dict(flex=.48, height="254px")),
+        dcc.Textarea(id="input-text", placeholder="Enter a movie summary here", style=dict(flex=.48, height="300px")),
         html.Figure(id="prediction", style=dict(flex=.52))
     ], style=dict(display="flex")),
     html.H2("Influential Words"),
@@ -102,11 +102,12 @@ def create_interpretation_graph(input_text, predictions):
     fig.update_layout(
         hoverlabel_bordercolor="white",
         margin=dict(l=0, r=0, t=20, b=100),
-        showlegend=False
+        showlegend=False,
     )
     fig.update_xaxes(
         fixedrange=True,
-        showticklabels=bool(np.any(tfidf_vector))
+        showticklabels=bool(np.any(tfidf_vector)),
+        tickfont=dict(size=11)
     )
     fig.update_yaxes(
         fixedrange=True,
