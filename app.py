@@ -14,9 +14,9 @@ from src.utils import truncate_string
 
 model, metadata = joblib.load("model/model.joblib"), json.load(open("model/metadata.json"))
 classes = metadata["classes"]
-tfidfvectorizer = model['columntransformer'].named_transformers_['tfidfvectorizer']
+tfidfvectorizer = model["columntransformer"].named_transformers_["tfidfvectorizer"]
 coefficients = pd.DataFrame(
-    [estimator.coef_.squeeze() for estimator in model['multioutputclassifier'].estimators_],
+    [estimator.coef_.squeeze() for estimator in model["multioutputclassifier"].estimators_],
     index=classes,
     columns=np.array(tfidfvectorizer.get_feature_names())
 )
@@ -31,7 +31,7 @@ app.layout = html.Div([
         dcc.Textarea(id="input-text", placeholder="Enter a movie summary here", style=dict(flex=.48, height="254px")),
         html.Figure(id="prediction", style=dict(flex=.52))
     ], style=dict(display="flex")),
-    html.H2("Interpretation"),
+    html.H2("Influential Words"),
     html.Figure(id="interpretation")
 ])
 
@@ -91,6 +91,7 @@ def create_interpretation_graph(input_text, predictions):
             col=col
         )
 
+    fig.update_annotations(font_size=13)
     fig.update_layout(
         hoverlabel_bordercolor="white",
         margin=dict(l=0, r=0, t=20, b=100),
