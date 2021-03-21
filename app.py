@@ -7,15 +7,15 @@ import json
 import numpy as np
 import pandas as pd
 import plotly.express as px
+from plotly.subplots import make_subplots
 
 model, metadata = joblib.load("model/model.joblib"), json.load(open("model/metadata.json"))
 classes = metadata["classes"]
 tfidfvectorizer = model['columntransformer'].named_transformers_['tfidfvectorizer']
-features = np.array(tfidfvectorizer.get_feature_names())
 coefficients = pd.DataFrame(
     [estimator.coef_.squeeze() for estimator in model['multioutputclassifier'].estimators_],
     index=classes,
-    columns=features
+    columns=np.array(tfidfvectorizer.get_feature_names())
 )
 
 app = dash.Dash(__name__)
@@ -36,17 +36,19 @@ def predict(input_text):
         input_text = ""
 
     tfidf_vector = tfidfvectorizer.transform([input_text]).toarray().squeeze()
+    tfidf_vector = tfidf_vector[tfidf_vector != 0]
 
     pred = pd.DataFrame({
         "Confidence": np.array(model.predict_proba([[input_text]])).squeeze()[:, 1],
         "Genre": classes
     }).sort_values("Confidence")
+
     fig = px.bar(pred, x="Confidence", y="Genre", range_x=[0, 1])
     fig.update_layout(
         font_family="sans-serif",
         margin=dict(t=0, r=0, b=0, l=0),
         xaxis=dict(fixedrange=True, tickvals=np.linspace(0, 1, 11)),
-        yaxis=dict(fixedrange=True, ticksuffix=" "))
+        yaxis=dict(title=None, fixedrange=True, ticksuffix=" "))
     fig.update_traces(hovertemplate="%{x:.3f}")
     return dcc.Graph(figure=fig, config=dict(displayModeBar=False))
 
