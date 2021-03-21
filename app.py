@@ -70,15 +70,18 @@ def create_interpretation_graph(input_text, predictions):
         rows=rows,
         cols=cols,
         subplot_titles=predictions.apply(lambda x: f"{x.Genre} ({x.Confidence:.0f}%)", 1),
+        horizontal_spacing=.02,
         vertical_spacing=.4
     )
-    largest_abs_contribution = longest_string = 0
+    largest_abs_contribution = 0
     for i in range(len(ordered_classes)):
         row, col = i // cols + 1, i % cols + 1
+
         contributions = coefficients.loc[ordered_classes[i]] * tfidf_vector
+        contributions = contributions[contributions != 0]
         contributions = contributions[contributions.abs().nlargest(10).index]
         largest_abs_contribution = max(largest_abs_contribution, contributions.abs().max())
-        longest_string = max(longest_string, contributions.index.str.len().max())
+
         fig.add_trace(
             go.Bar(
                 x=[truncate_string(index, 15) for index in contributions.index],
@@ -91,23 +94,25 @@ def create_interpretation_graph(input_text, predictions):
             col=col
         )
 
+        if col == 1:
+            fig.update_yaxes(title="Contribution", title_font_size=12, row=row, col=col)
+
     fig.update_annotations(font_size=13)
     fig.update_layout(
         hoverlabel_bordercolor="white",
         margin=dict(l=0, r=0, t=20, b=100),
         showlegend=False
     )
-    fig.update_xaxes(fixedrange=True)
+    fig.update_xaxes(
+        fixedrange=True,
+        showticklabels=bool(np.any(tfidf_vector))
+    )
     fig.update_yaxes(
         fixedrange=True,
         range=[-largest_abs_contribution * 1.05, largest_abs_contribution * 1.05],
         showticklabels=False,
-        tickvals=[0],
-        automargin=True
+        tickvals=[0]
     )
-
-    for row in range(rows):
-        fig.update_yaxes(title="Contribution", row=row + 1, col=1)
 
     return dcc.Graph(figure=fig, config=dict(displayModeBar=False), responsive=True, style=dict(height="400px"))
 
