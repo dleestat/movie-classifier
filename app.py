@@ -24,9 +24,9 @@ app.title = "Movie Genre Predictor"
 app.layout = html.Div([
     html.H1("Movie Genre Predictor"),
     html.Div([
-        dcc.Textarea(id="input-text", className="flex-item"),
-        html.Figure(id="prediction", className="flex-item")
-    ], className="flex-container")
+        dcc.Textarea(id="input-text", placeholder="Enter a movie summary", style=dict(flex=1)),
+        html.Figure(id="prediction", style=dict(flex=1))
+    ], style=dict(display="flex"))
 ])
 
 
@@ -48,7 +48,9 @@ def predict(input_text):
         font_family="sans-serif",
         margin=dict(t=0, r=0, b=0, l=0),
         xaxis=dict(fixedrange=True, tickvals=np.linspace(0, 1, 11)),
-        yaxis=dict(title=None, fixedrange=True, ticksuffix=" "))
+        yaxis=dict(title=None, fixedrange=True, ticksuffix=" "),
+        height=300
+    )
     fig.update_traces(hovertemplate="%{x:.3f}")
     return dcc.Graph(figure=fig, config=dict(displayModeBar=False))
 
