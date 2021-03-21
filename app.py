@@ -41,35 +41,41 @@ def predict(input_text):
     if not input_text:
         input_text = ""
 
-    return create_prediction_graph(input_text), create_interpretation_graph(input_text)
-
-
-def create_prediction_graph(input_text):
     predictions = pd.DataFrame({
-        "Confidence": np.array(model.predict_proba([[input_text]])).squeeze()[:, 1],
+        "Confidence": np.array(model.predict_proba([[input_text]])).squeeze()[:, 1] * 100,
         "Genre": classes
-    }).sort_values("Confidence")
+    }).sort_values("Confidence", ascending=False).reset_index()
 
-    fig = px.bar(predictions, x="Confidence", y="Genre", range_x=[0, 1])
+    return create_prediction_graph(predictions), create_interpretation_graph(input_text, predictions)
+
+
+def create_prediction_graph(predictions):
+    fig = px.bar(predictions[::-1], x="Confidence", y="Genre", range_x=[0, 100])
     fig.update_layout(
         margin=dict(l=120, r=0, t=0, b=0),
-        xaxis=dict(fixedrange=True, tickvals=np.linspace(0, 1, 11)),
+        xaxis=dict(fixedrange=True, ticksuffix="%", tickvals=np.linspace(0, 100, 11)),
         yaxis=dict(fixedrange=True, ticksuffix=" ", title=None)
     )
-    fig.update_traces(hovertemplate="%{x:.3f}")
+    fig.update_traces(hovertemplate="%{x:.1f}%")
     return dcc.Graph(figure=fig, config=dict(displayModeBar=False), responsive=True, style=dict(height="300px"))
 
 
-def create_interpretation_graph(input_text):
+def create_interpretation_graph(input_text, predictions):
+    ordered_classes = list(predictions.Genre)
     tfidf_vector = tfidfvectorizer.transform([input_text]).toarray().squeeze()
 
     rows = 2
-    cols = math.ceil(len(classes) / rows)
-    fig = make_subplots(rows=rows, cols=cols, subplot_titles=classes, vertical_spacing=.4)
+    cols = math.ceil(len(ordered_classes) / rows)
+    fig = make_subplots(
+        rows=rows,
+        cols=cols,
+        subplot_titles=predictions.apply(lambda x: f"{x.Genre} ({x.Confidence:.0f}%)", 1),
+        vertical_spacing=.4
+    )
     largest_abs_contribution = longest_string = 0
-    for i in range(len(classes)):
+    for i in range(len(ordered_classes)):
         row, col = i // cols + 1, i % cols + 1
-        contributions = coefficients.loc[classes[i]] * tfidf_vector
+        contributions = coefficients.loc[ordered_classes[i]] * tfidf_vector
         contributions = contributions[contributions.abs().nlargest(10).index]
         largest_abs_contribution = max(largest_abs_contribution, contributions.abs().max())
         longest_string = max(longest_string, contributions.index.str.len().max())
