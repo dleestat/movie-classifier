@@ -33,13 +33,15 @@ app.layout = html.Div([
 ])
 
 
-@app.callback(Output("prediction", "children"), Input("input-text", "value"))
+@app.callback([Output("prediction", "children"), Output("interpretation", "children")], Input("input-text", "value"))
 def predict(input_text):
     if not input_text:
         input_text = ""
 
-    tfidf_vector = tfidfvectorizer.transform([input_text]).toarray().squeeze()
+    return create_prediction_graph(input_text), create_interpretation_graph(input_text)
 
+
+def create_prediction_graph(input_text):
     pred = pd.DataFrame({
         "Confidence": np.array(model.predict_proba([[input_text]])).squeeze()[:, 1],
         "Genre": classes
@@ -52,6 +54,16 @@ def predict(input_text):
         yaxis=dict(fixedrange=True, ticksuffix=" ", title=None)
     )
     fig.update_traces(hovertemplate="%{x:.3f}")
+    return dcc.Graph(figure=fig, config=dict(displayModeBar=False), responsive=True, style=dict(height="300px"))
+
+
+def create_interpretation_graph(input_text):
+    tfidf_vector = tfidfvectorizer.transform([input_text]).toarray().squeeze()
+
+    fig = make_subplots(rows=2, cols=7)
+    fig.update_layout(
+        margin=dict(l=0, r=0, t=0, b=0),
+    )
     return dcc.Graph(figure=fig, config=dict(displayModeBar=False), responsive=True, style=dict(height="300px"))
 
 
