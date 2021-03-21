@@ -4,9 +4,11 @@ import dash_core_components as dcc
 import dash_html_components as html
 import joblib
 import json
+import math
 import numpy as np
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 model, metadata = joblib.load("model/model.joblib"), json.load(open("model/metadata.json"))
@@ -60,11 +62,42 @@ def create_prediction_graph(input_text):
 def create_interpretation_graph(input_text):
     tfidf_vector = tfidfvectorizer.transform([input_text]).toarray().squeeze()
 
-    fig = make_subplots(rows=2, cols=7)
+    rows = 2
+    cols = math.ceil(len(classes) / rows)
+    fig = make_subplots(rows=rows, cols=cols, subplot_titles=classes)
+    largest_abs_contribution = 0
+    for i in range(len(classes)):
+        row, col = i // cols + 1, i % cols + 1
+        contributions = coefficients.loc[classes[i]] * tfidf_vector
+        contributions = contributions[contributions.abs().nlargest(10).index]
+        largest_abs_contribution = max(largest_abs_contribution, contributions.abs().max())
+        fig.add_trace(
+            go.Bar(
+                x=contributions.index,
+                y=contributions,
+                hovertemplate="%{y:.3f}<extra></extra>",
+            ),
+            row=row,
+            col=col
+        )
+
     fig.update_layout(
-        margin=dict(l=0, r=0, t=0, b=0),
+        hoverlabel_bordercolor="white",
+        margin=dict(l=0, r=0, t=20, b=0),
+        showlegend=False,
     )
-    return dcc.Graph(figure=fig, config=dict(displayModeBar=False), responsive=True, style=dict(height="300px"))
+    fig.update_xaxes(fixedrange=True)
+    fig.update_yaxes(
+        fixedrange=True,
+        range=[-largest_abs_contribution * 1.05, largest_abs_contribution * 1.05],
+        showticklabels=False,
+        tickvals=[0]
+    )
+
+    for row in range(rows):
+        fig.update_yaxes(title="Contribution", row=row + 1, col=1)
+
+    return dcc.Graph(figure=fig, config=dict(displayModeBar=False), responsive=True, style=dict(height="400px"))
 
 
 if __name__ == "__main__":
