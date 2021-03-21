@@ -57,6 +57,7 @@ def create_prediction_graph(predictions):
         yaxis=dict(fixedrange=True, ticksuffix=" ", title=None)
     )
     fig.update_traces(hovertemplate="%{x:.1f}%")
+    fig.update_xaxes(title_font_size=12)
     return dcc.Graph(figure=fig, config=dict(displayModeBar=False), responsive=True, style=dict(height="300px"))
 
 
@@ -95,7 +96,7 @@ def create_interpretation_graph(input_text, predictions):
         )
 
         if col == 1:
-            fig.update_yaxes(title="Contribution", title_font_size=12, row=row, col=col)
+            fig.update_yaxes(title="Contribution", title_font_size=11, row=row, col=col)
 
     fig.update_annotations(font_size=13)
     fig.update_layout(
