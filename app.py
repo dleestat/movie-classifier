@@ -60,7 +60,7 @@ def update_example_input(example_input):
 
 @app.callback([Output("prediction", "children"), Output("interpretation", "children")], Input("input-text", "value"))
 def predict(input_text):
-    if not input_text:
+    if input_text is None:
         input_text = ""
 
     predictions = pd.DataFrame({
@@ -96,14 +96,15 @@ def create_interpretation_graph(input_text, predictions):
         horizontal_spacing=.015,
         vertical_spacing=.4
     )
-    largest_abs_contribution = 0
+
+    largest_contribution = 0
     for i in range(len(ordered_classes)):
         row, col = i // cols + 1, i % cols + 1
 
         contributions = coefficients.loc[ordered_classes[i]] * tfidf_vector
         contributions = contributions[contributions != 0]
         contributions = contributions[contributions.abs().nlargest(10).index]
-        largest_abs_contribution = max(largest_abs_contribution, contributions.abs().max())
+        largest_contribution = max(largest_contribution, contributions.abs().max())
 
         fig.add_trace(
             go.Bar(
@@ -133,7 +134,7 @@ def create_interpretation_graph(input_text, predictions):
     )
     fig.update_yaxes(
         fixedrange=True,
-        range=[-largest_abs_contribution * 1.05, largest_abs_contribution * 1.05],
+        range=[-largest_contribution * 1.05, largest_contribution * 1.05],
         showticklabels=False,
         tickvals=[0]
     )
