@@ -12,7 +12,9 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from src.utils import truncate_string
 
-model, metadata = joblib.load("model/model.joblib"), json.load(open("model/metadata.json"))
+model = joblib.load("model/model.joblib")
+metadata = json.load(open("model/metadata.json"))
+example_inputs = json.load(open("assets/example_inputs.json"))
 classes = metadata["classes"]
 tfidfvectorizer = model["columntransformer"].named_transformers_["tfidfvectorizer"]
 coefficients = pd.DataFrame(
@@ -21,19 +23,45 @@ coefficients = pd.DataFrame(
     columns=np.array(tfidfvectorizer.get_feature_names())
 )
 
-app = dash.Dash(__name__)
+app = dash.Dash(title="Movie Genre Predictor")
 server = app.server
-app.title = "Movie Genre Predictor"
 app.layout = html.Div([
     html.H1("Movie Genre Predictor"),
     html.H2("Prediction"),
     html.Div([
-        dcc.Textarea(id="input-text", placeholder="Enter a movie summary here", style=dict(flex=.48, height="300px")),
-        html.Figure(id="prediction", style=dict(flex=.52))
-    ], style=dict(display="flex")),
+        html.Div([
+            dcc.Dropdown(
+                id="example-input",
+                clearable=True,
+                options=[{"label": i, "value": i} for i in sorted(example_inputs.keys())],
+                optionHeight=22,
+                placeholder="Select an example",
+                style={"font-size": "12px", "margin-bottom": "6px", "width": "360px"},
+            ),
+            dcc.Textarea(
+                id="input-text",
+                placeholder="Enter a movie summary",
+                style={
+                    "border": "1px solid #ccc",
+                    "border-radius": "4px",
+                    "font-size": "12px",
+                    "height": "210px",
+                    "padding": "9px 10px",
+                    "resize": "none",
+                    "width": "100%"
+                }
+            )
+        ], style={"flex": .48}),
+        html.Figure(id="prediction", style={"flex": .52, "margin": "0px 0px 0px 70px"})
+    ], style={"display": "flex"}),
     html.H2("Influential Words"),
     html.Figure(id="interpretation")
-])
+], style={"margin": "auto", "width": "90%"})
+
+
+@app.callback([Output("input-text", "value"), Output("input-text", "disabled")], Input("example-input", "value"))
+def update_example_input(example_input):
+    return (example_inputs[example_input], True) if example_input else ("", False)
 
 
 @app.callback([Output("prediction", "children"), Output("interpretation", "children")], Input("input-text", "value"))
@@ -52,7 +80,7 @@ def predict(input_text):
 def create_prediction_graph(predictions):
     fig = px.bar(predictions[::-1], x="Confidence", y="Genre", range_x=[0, 100])
     fig.update_layout(
-        margin=dict(l=120, r=0, t=0, b=0),
+        margin=dict(l=0, r=0, t=0, b=0),
         xaxis=dict(fixedrange=True, ticksuffix="%", tickvals=np.linspace(0, 100, 11)),
         yaxis=dict(fixedrange=True, ticksuffix=" ", title=None)
     )
@@ -71,7 +99,7 @@ def create_interpretation_graph(input_text, predictions):
         rows=rows,
         cols=cols,
         subplot_titles=predictions.apply(lambda x: f"{x.Genre} ({x.Confidence:.0f}%)", 1),
-        horizontal_spacing=.02,
+        horizontal_spacing=.015,
         vertical_spacing=.4
     )
     largest_abs_contribution = 0
