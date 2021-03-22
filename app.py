@@ -10,7 +10,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from src.utils import truncate_string
+from src.utils import remove_leading_article, truncate_string
 
 model = joblib.load("model/model.joblib")
 metadata = json.load(open("model/metadata.json"))
@@ -33,7 +33,7 @@ app.layout = html.Div([
             dcc.Dropdown(
                 id="example-input",
                 clearable=True,
-                options=[{"label": i, "value": i} for i in sorted(example_inputs.keys())],
+                options=[{"label": i, "value": i} for i in sorted(example_inputs.keys(), key=remove_leading_article)],
                 optionHeight=22,
                 placeholder="Select an example",
                 style={"font-size": "12px", "margin-bottom": "6px", "width": "360px"},
