@@ -33,31 +33,24 @@ app.layout = html.Div([
             dcc.Dropdown(
                 id="example-input",
                 clearable=True,
-                options=[{"label": i, "value": i} for i in sorted(example_inputs.keys(), key=remove_leading_article)],
+                options=[dict(label=i, value=i) for i in sorted(example_inputs.keys(), key=remove_leading_article)],
                 optionHeight=22,
                 placeholder="Select an example",
                 searchable=False,
-                style={"font-size": "12px", "margin-bottom": "6px", "width": "360px"},
+                style=dict(fontSize="12px", marginBottom="6px", width="360px"),
             ),
             dcc.Textarea(
                 id="input-text",
                 placeholder="Enter a movie summary",
-                style={
-                    "border": "1px solid #ccc",
-                    "border-radius": "4px",
-                    "font-size": "12px",
-                    "height": "210px",
-                    "padding": "9px 10px",
-                    "resize": "none",
-                    "width": "100%"
-                }
+                style=dict(border="1px solid #ccc", borderRadius="4px", fontSize="12px", height="210px",
+                           padding="9px 10px", resize="none", width="100%")
             )
-        ], style={"flex": .48}),
-        html.Figure(id="prediction", style={"flex": .52, "margin": "0px 0px 0px 70px"})
-    ], style={"display": "flex"}),
+        ], style=dict(flex=.48)),
+        html.Figure(id="prediction", style=dict(flex=.52, margin="0px 0px 0px 70px"))
+    ], style=dict(display="flex")),
     html.H2("Influential Words"),
     html.Figure(id="interpretation")
-], style={"margin": "auto", "width": "90%"})
+], style=dict(margin="auto", width="90%"))
 
 
 @app.callback([Output("input-text", "value"), Output("input-text", "disabled")], Input("example-input", "value"))
