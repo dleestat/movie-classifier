@@ -23,7 +23,7 @@ coefficients = pd.DataFrame(
     columns=np.array(tfidfvectorizer.get_feature_names())
 )
 
-app = dash.Dash(title="Movie Genre Predictor")
+app = dash.Dash(title="Movie Genre Predictor", update_title="Movie Genre Predictor")
 server = app.server
 app.layout = html.Div([
     html.H1("Movie Genre Predictor"),
