@@ -36,6 +36,7 @@ app.layout = html.Div([
                 options=[{"label": i, "value": i} for i in sorted(example_inputs.keys(), key=remove_leading_article)],
                 optionHeight=22,
                 placeholder="Select an example",
+                searchable=False,
                 style={"font-size": "12px", "margin-bottom": "6px", "width": "360px"},
             ),
             dcc.Textarea(
