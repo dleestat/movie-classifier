@@ -23,16 +23,20 @@ def main():
     X, Y = df[["summary"]], df.drop("summary", axis=1)
     X_train, X_val, Y_train, Y_val = train_test_split(X, Y, test_size=10000, random_state=0)
 
-    algorithm, min_df, sublinear_tf = config["algorithm"], config["tfidf_min_df"], config["tfidf_sublinear_tf"]
-    if algorithm == "baseline":
+    if config["algorithm"] == "baseline":
         classifier = DummyClassifier()
-    elif algorithm == "logistic":
-        classifier = LogisticRegression(solver="liblinear", random_state=0)
+    elif config["algorithm"] == "logistic":
+        classifier = LogisticRegression(fit_intercept=config["fit_intercept"], solver="liblinear", random_state=0)
     else:
-        raise ValueError(f"{algorithm} is not a valid algorithm")
+        raise ValueError(f"{config['algorithm']} is not a valid algorithm")
 
     model = make_pipeline(
-        make_column_transformer((TfidfVectorizer(min_df=min_df, sublinear_tf=sublinear_tf), 0)),
+        make_column_transformer((TfidfVectorizer(
+            min_df=config["min_df"],
+            max_df=config["max_df"],
+            stop_words=config["stop_words"],
+            sublinear_tf=config["sublinear_tf"]
+        ), 0)),
         MultiOutputClassifier(classifier)
     )
 
@@ -50,7 +54,7 @@ def main():
         end = time()
         metrics["inference time"] = end - start
         metrics["# samples"] = len(X)
-        features = model['columntransformer'].named_transformers_['tfidfvectorizer'].get_feature_names()
+        features = model["columntransformer"].named_transformers_["tfidfvectorizer"].get_feature_names()
         metrics["# features"] = len(features)
         metrics["exact match"] = accuracy_score(Y, Y_pred)
         metrics["Hamming similarity"] = 1 - hamming_loss(Y, Y_pred)
@@ -61,18 +65,22 @@ def main():
         return metrics
 
     metrics = {
-        "tfidf_min_df": min_df,
-        "tfidf_sublinear_tf": sublinear_tf,
+        "algorithm": config["algorithm"],
+        "fit_intercept": config["fit_intercept"],
+        "min_df": config["min_df"],
+        "max_df": config["max_df"],
+        "stop_words": config["stop_words"],
+        "sublinear_tf": config["sublinear_tf"],
         "train": evaluate(model, X_train, Y_train),
         "validation": evaluate(model, X_val, Y_val, train=False),
         "full_train": evaluate(model, X, Y)
     }
-    with open(f"model/profiling/{algorithm} {datetime.datetime.today()}.json", "w") as f:
+    with open(f"model/profiling/{datetime.datetime.today()}.json", "w") as f:
         json.dump(metrics, f, indent=2)
 
     joblib.dump(model, "model/model.joblib")
 
-    features = model['columntransformer'].named_transformers_['tfidfvectorizer'].get_feature_names()
+    features = model["columntransformer"].named_transformers_["tfidfvectorizer"].get_feature_names()
     with open("model/profiling/features.txt", "w") as f:
         f.write("\n".join(features))
 

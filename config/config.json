@@ -1,7 +1,10 @@
 {
   "algorithm": "logistic",
-  "tfidf_min_df": 10,
-  "tfidf_sublinear_tf": true,
+  "fit_intercept": false,
+  "min_df": 10,
+  "max_df": 1.0,
+  "stop_words": "english",
+  "sublinear_tf": true,
   "genre_normalization": {
     "Acid western": ["Western"],
     "Action": ["Action"],
