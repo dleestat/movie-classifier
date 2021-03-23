@@ -1,17 +1,5 @@
-* {
-    font-family: sans-serif;
-}
-
-a, li, p {
-    font-size: 15px;
-}
-
-h2 {
-    margin-bottom: 0;
-}
-
-a, p {
-    margin-top: .8em;
+textarea[disabled] {
+    color: #aaa;
 }
 
 .dash-graph * {
