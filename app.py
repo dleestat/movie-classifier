@@ -26,7 +26,7 @@ coefficients = pd.DataFrame(
 app = dash.Dash(title="Real-Time Movie Classifier", update_title=None)
 server = app.server
 app.layout = html.Div([
-    html.H1("Real-Time Movie Classifier", style=dict(marginBottom="10px")),
+    html.H1("Real-Time Movie Classifier", style=dict(marginBottom=".3em")),
     html.A("GitHub", href="https://github.com/dleestat/movie-classifier", target="_blank", style=dict(marginTop="-10px")),
     html.H2("Prediction"),
     html.P([
@@ -59,12 +59,12 @@ app.layout = html.Div([
         "To identify words that heavily contribute to the above prediction, we define a word's ",
         html.I("contribution"),
         " to a genre's prediction as the product of:"
-    ]),
+    ], style=dict(marginBottom="0")),
     html.Ol([
         html.Li("The model coefficient corresponding to the word and genre."),
         html.Li("The input's TF-IDF value corresponding to the word.")
-    ], style=dict(marginTop="-5px")),
-    html.P("For each genre, we display the words with the largest contributions below."),
+    ], style=dict(marginTop=".4em", marginBottom="0")),
+    html.P("For each genre, we display the words with the largest contributions below.", style=dict(marginTop=".4em")),
     html.Figure(id="interpretation")
 ], style=dict(margin="auto", width="95%"))
 
