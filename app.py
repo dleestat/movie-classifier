@@ -24,7 +24,12 @@ coefficients = pd.DataFrame(
     columns=np.array(tfidfvectorizer.get_feature_names())
 )
 
-app = dash.Dash(title="Real-Time Movie Classifier", update_title=None, external_stylesheets=[dbc.themes.MATERIA])
+app = dash.Dash(
+    __name__,
+    title="Real-Time Movie Classifier",
+    update_title=None,
+    external_stylesheets=[dbc.themes.MATERIA]
+)
 server = app.server
 app.layout = html.Div([
     html.Div([
