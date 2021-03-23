@@ -30,10 +30,16 @@ app.layout = html.Div([
     html.Div([
         html.H1("Real-Time Movie Classifier"),
         html.P("Classify a movie and interpret the prediction in real-time.", style=dict(marginTop="-.5em")),
-        dbc.Button([
-            html.Img(src="assets/GitHub-Mark-120px-plus.png", height="15em", style=dict(marginRight=".5em")),
-            "View on GitHub"
-        ], href="https://github.com/dleestat/movie-classifier", size="sm", target="_blank", style=dict(marginTop="-.5em"))
+        dbc.Button(
+            [
+                html.Img(src="assets/GitHub-Mark-120px-plus.png", height="15em", style=dict(marginRight=".5em")),
+                "View on GitHub"
+            ],
+            href="https://github.com/dleestat/movie-classifier",
+            size="sm",
+            target="_blank",
+            style=dict(marginTop="-.5em")
+        )
     ], style=dict(textAlign="center")),
     html.H2("Prediction"),
     html.P([
