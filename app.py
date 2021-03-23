@@ -43,7 +43,7 @@ app.layout = html.Div([
             href="https://github.com/dleestat/movie-classifier",
             size="sm",
             target="_blank",
-            style=dict(marginTop="-.5em")
+            style=dict(marginTop="-.4em")
         )
     ], style=dict(textAlign="center")),
     html.H2("Prediction"),
@@ -84,7 +84,7 @@ app.layout = html.Div([
     ], style=dict(marginTop=".4em", marginBottom="0")),
     html.P("For each genre, we display the words with the largest contributions below.", style=dict(marginTop=".4em")),
     html.Figure(id="interpretation")
-], style=dict(margin="auto", marginTop="20px", width="90%"))
+], style=dict(margin="auto", marginTop="1em", width="90%"))
 
 
 @app.callback([Output("input-text", "value"), Output("input-text", "disabled")], Input("example-input", "value"))
