@@ -40,15 +40,15 @@ app.layout = html.Div([
                 id="example-input",
                 clearable=True,
                 options=[dict(label=i, value=i) for i in sorted(example_inputs.keys(), key=remove_leading_article)],
-                optionHeight=22,
+                optionHeight=25,
                 placeholder="Select an example",
                 searchable=False,
-                style=dict(fontSize="12px", marginBottom="6px", width="360px"),
+                style=dict(fontSize="13px", marginBottom="6px", width="360px"),
             ),
             dcc.Textarea(
                 id="input-text",
                 placeholder="Enter a movie summary",
-                style=dict(border="1px solid #ccc", borderRadius="4px", fontSize="12px", height="210px",
+                style=dict(border="1px solid #ccc", borderRadius="4px", fontSize="13px", height="210px",
                            padding="9px 10px", resize="none", width="100%")
             )
         ], style=dict(flex=.48)),
