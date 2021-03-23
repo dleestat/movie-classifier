@@ -27,7 +27,7 @@ app = dash.Dash(title="Real-Time Movie Classifier", update_title=None)
 server = app.server
 app.layout = html.Div([
     html.H1("Real-Time Movie Classifier", style=dict(marginBottom=".3em")),
-    html.A("GitHub", href="https://github.com/dleestat/movie-classifier", target="_blank", style=dict(marginTop="-10px")),
+    html.A("GitHub", href="https://github.com/dleestat/movie-classifier", target="_blank"),
     html.H2("Prediction"),
     html.P([
         "The following classifier is trained on the ",
