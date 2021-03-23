@@ -1,5 +1,6 @@
 import dash
 from dash.dependencies import Input, Output
+import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 import joblib
@@ -23,11 +24,17 @@ coefficients = pd.DataFrame(
     columns=np.array(tfidfvectorizer.get_feature_names())
 )
 
-app = dash.Dash(title="Real-Time Movie Classifier", update_title=None)
+app = dash.Dash(title="Real-Time Movie Classifier", update_title=None, external_stylesheets=[dbc.themes.MATERIA])
 server = app.server
 app.layout = html.Div([
-    html.H1("Real-Time Movie Classifier", style=dict(marginBottom=".3em")),
-    html.A("GitHub", href="https://github.com/dleestat/movie-classifier", target="_blank"),
+    html.Div([
+        html.H1("Real-Time Movie Classifier"),
+        html.P("Classify a movie and interpret the prediction in real-time.", style=dict(marginTop="-.5em")),
+        dbc.Button([
+            html.Img(src="assets/GitHub-Mark-120px-plus.png", height="15em", style=dict(marginRight=".5em")),
+            "View on GitHub"
+        ], href="https://github.com/dleestat/movie-classifier", size="sm", target="_blank", style=dict(marginTop="-.5em"))
+    ], style=dict(textAlign="center")),
     html.H2("Prediction"),
     html.P([
         "The following classifier is trained on the ",
@@ -54,10 +61,10 @@ app.layout = html.Div([
         ], style=dict(flex=.48)),
         html.Figure(id="prediction", style=dict(flex=.52, margin="0px 0px 0px 70px"))
     ], style=dict(display="flex")),
-    html.H2("Influential Words", style=dict(marginTop="0")),
+    html.H2("Influential Words"),
     html.P([
         "To identify words that heavily contribute to the above prediction, we define a word's ",
-        html.I("contribution"),
+        html.Em("contribution"),
         " to a genre's prediction as the product of:"
     ], style=dict(marginBottom="0")),
     html.Ol([
@@ -66,7 +73,7 @@ app.layout = html.Div([
     ], style=dict(marginTop=".4em", marginBottom="0")),
     html.P("For each genre, we display the words with the largest contributions below.", style=dict(marginTop=".4em")),
     html.Figure(id="interpretation")
-], style=dict(margin="auto", width="95%"))
+], style=dict(margin="auto", marginTop="20px", width="90%"))
 
 
 @app.callback([Output("input-text", "value"), Output("input-text", "disabled")], Input("example-input", "value"))
@@ -96,7 +103,7 @@ def create_prediction_graph(predictions):
     )
     fig.update_traces(hovertemplate="%{x:.1f}%")
     fig.update_xaxes(title_font_size=12)
-    return dcc.Graph(figure=fig, config=dict(displayModeBar=False), responsive=True, style=dict(height="300px"))
+    return dcc.Graph(figure=fig, config=dict(displayModeBar=False), responsive=True, style=dict(height="250px"))
 
 
 def create_interpretation_graph(input_text, predictions):
