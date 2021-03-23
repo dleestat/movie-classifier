@@ -23,11 +23,16 @@ coefficients = pd.DataFrame(
     columns=np.array(tfidfvectorizer.get_feature_names())
 )
 
-app = dash.Dash(title="Movie Genre Predictor", update_title=None)
+app = dash.Dash(title="Real-Time Movie Classifier", update_title=None)
 server = app.server
 app.layout = html.Div([
-    html.H1("Movie Genre Predictor"),
+    html.H1("Real-Time Movie Classifier"),
     html.H2("Prediction"),
+    html.P([
+        "The following classifier is trained on the ",
+        html.A("CMU Movie Summary Corpus", href="http://www.cs.cmu.edu/~ark/personas/"),
+        ". We use binary relevance with logistic regression using TF-IDF text features."
+    ]),
     html.Div([
         html.Div([
             dcc.Dropdown(
@@ -48,9 +53,19 @@ app.layout = html.Div([
         ], style=dict(flex=.48)),
         html.Figure(id="prediction", style=dict(flex=.52, margin="0px 0px 0px 70px"))
     ], style=dict(display="flex")),
-    html.H2("Influential Words"),
+    html.H2("Influential Words", style=dict(marginTop="0")),
+    html.P([
+        " We now identify words that heavily contribute to the above prediction. We define a word's ",
+        html.I("contribution"),
+        " to a genre's prediction as the product of:",
+        html.Ol([
+            html.Li("The model coefficient corresponding to the word and genre."),
+            html.Li("The input's TF-IDF value corresponding to the word.")
+        ], style=dict(marginTop="5px"))
+    ]),
+    html.P("For each genre, we display the words with the largest contributions below."),
     html.Figure(id="interpretation")
-], style=dict(margin="auto", width="90%"))
+], style=dict(margin="auto", width="95%"))
 
 
 @app.callback([Output("input-text", "value"), Output("input-text", "disabled")], Input("example-input", "value"))
