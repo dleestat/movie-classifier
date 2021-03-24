@@ -49,7 +49,7 @@ app.layout = html.Div([
     html.H2("Prediction"),
     html.P([
         "The following classifier is trained on the ",
-        html.A("CMU Movie Summary Corpus", href="http://www.cs.cmu.edu/~ark/personas/"),
+        html.A("CMU Movie Summary Corpus", href="http://www.cs.cmu.edu/~ark/personas/", target="_blank",),
         ". We use binary relevance with logistic regression using TF-IDF text features."
     ]),
     html.Div([
