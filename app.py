@@ -66,11 +66,11 @@ app.layout = html.Div([
             dcc.Textarea(
                 id="input-text",
                 placeholder="Enter a movie summary",
-                style=dict(border="1px solid #ccc", borderRadius="4px", fontSize="13px", height="210px",
+                style=dict(border="1px solid #ccc", borderRadius="4px", fontSize="13px", height="200px",
                            padding="8px 10px", resize="none", width="100%")
             )
-        ], style=dict(flex=.48)),
-        html.Figure(id="prediction", style=dict(flex=.52, margin="0px 0px 0px 70px"))
+        ], style=dict(flex=.5, marginRight="25px")),
+        html.Figure(id="prediction", style=dict(flex=.5, marginLeft="25px"))
     ], style=dict(display="flex")),
     html.H2("Influential Words"),
     html.P([
