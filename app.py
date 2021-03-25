@@ -128,7 +128,7 @@ def create_interpretation_graph(input_text, predictions):
         cols=cols,
         subplot_titles=predictions.apply(lambda x: f"{x.Genre} ({x.Confidence:.0f}%)", 1),
         horizontal_spacing=.015,
-        vertical_spacing=.4
+        vertical_spacing=.44
     )
 
     largest_contribution = 0
@@ -155,7 +155,7 @@ def create_interpretation_graph(input_text, predictions):
         if col == 1:
             fig.update_yaxes(title="Contribution", title_font_size=11, row=row, col=col)
 
-    fig.update_annotations(font_size=13)
+    fig.update_annotations(font_size=12)
     fig.update_layout(
         hoverlabel_bordercolor="white",
         margin=dict(l=0, r=0, t=20, b=100),
@@ -173,7 +173,7 @@ def create_interpretation_graph(input_text, predictions):
         tickvals=[0]
     )
 
-    return dcc.Graph(figure=fig, config=dict(displayModeBar=False), responsive=True, style=dict(height="400px"))
+    return dcc.Graph(figure=fig, config=dict(displayModeBar=False), responsive=True, style=dict(height="380px"))
 
 
 if __name__ == "__main__":
