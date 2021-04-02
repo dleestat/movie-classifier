@@ -14,9 +14,8 @@ from plotly.subplots import make_subplots
 from src.utils import remove_leading_article, truncate_string
 
 model = joblib.load("model/model.joblib")
-metadata = json.load(open("model/metadata.json"))
+classes = json.load(open("model/metadata.json"))["classes"]
 example_inputs = json.load(open("assets/example_inputs.json"))
-classes = metadata["classes"]
 tfidfvectorizer = model["columntransformer"].named_transformers_["tfidfvectorizer"]
 coefficients = pd.DataFrame(
     [estimator.coef_.squeeze() for estimator in model["multioutputclassifier"].estimators_],
