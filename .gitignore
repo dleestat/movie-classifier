@@ -1,5 +1,5 @@
 data/
-model/
+model/profiling/
 .idea/
 .ipynb_checkpoints/
 __pycache__/
