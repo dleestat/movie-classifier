@@ -1,5 +1,5 @@
 import dash
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
@@ -77,7 +77,8 @@ app.layout = html.Div([
         html.Li("The input's TF-IDF value corresponding to the word.")
     ], style=dict(marginTop=".4em", marginBottom="0")),
     html.P("For each genre, we display the words with the largest contributions below.", style=dict(marginTop=".4em")),
-    html.Figure(id="interpretation")
+    html.Figure(id="interpretation"),
+    dcc.Interval(id="interval", interval=500)
 ], style=dict(margin="auto", marginTop="1em", width="90%"))
 
 
@@ -86,8 +87,8 @@ def update_example_input(example_input):
     return (example_inputs[example_input], True) if example_input else ("", False)
 
 
-@app.callback([Output("prediction", "children"), Output("interpretation", "children")], Input("input-text", "value"))
-def predict(input_text):
+@app.callback([Output("prediction", "children"), Output("interpretation", "children")], Input("interval", "n_intervals"), State("input-text", "value"))
+def predict(n_intervals, input_text):
     if input_text is None:
         input_text = ""
 
