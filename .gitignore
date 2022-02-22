@@ -3,4 +3,5 @@ model/profiling/
 .idea/
 .ipynb_checkpoints/
 __pycache__/
+scratch.ipynb
 .DS_Store
