@@ -78,7 +78,7 @@ app.layout = html.Div([
     ], style=dict(marginTop=".4em", marginBottom="0")),
     html.P("For each genre, we display the words with the largest contributions below.", style=dict(marginTop=".4em")),
     html.Figure(id="interpretation"),
-    dcc.Interval(id="interval", interval=500)
+    dcc.Interval(id="interval", interval=1000)
 ], style=dict(margin="auto", marginTop="1em", width="90%"))
 
 
